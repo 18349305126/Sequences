@@ -1,167 +1,43 @@
-#include "Sequence.h"
+#pragma once
+#include<iostream>
+using namespace std;
 #include<string>
-Sequence::Sequence(string fn)
-{
-	filename = fn;
-	ifRead = false;
-}
+#include<vector>
+#include<fstream>
 
-string Sequence::getFilename()
+class Sequence
 {
-	return filename;
-}
+public:
+	Sequence(string);
+	string getFilename();
+	void read();
+	int length();
+	int number(char);
+	string longestConsecutive();
+//--------------------------------------------------------------------------------------------------------
+	int longestRepeated();
+	/*步骤：
+		  1.设定16种基本case：AA,AG,AC,AT,GA,GC......
+		  2.扫描整个数组，每一个fileData[i]分别对应一个基本case，取出相同的case的项
+		  3.设置一个int maxlength
+		  4.对每一种case，取出所有该case的项，对每一项的索引index开始，计算每一个index项到index+maxlength项的char值之和，将
+		    这些和看成一个集合，若该集合中所有元素都不一样，则maxlength不变；若集合中有一样的元素，则将maxlength一直+1，
+			直到集合中所有元素都不一样，这时再将maxlength-1,并记录上一次相同的序列*/
 
-void Sequence::read()
-{
-	cout << "please input the file address: ";
-	string fileAddress;
-	cin >> fileAddress;
-	ifstream input(fileAddress, ios::in);
-	int count = 0;
-	if (!input)
-	{
-		cerr << "the file cannot be opened";
-		exit(EXIT_FAILURE);
-	}
-	char temp;
-	while (!input.eof())
-	{
-		input >> temp;
-		if (temp!='/n')
-		{
-			fileData[count] = temp;
-			count++;
-		}
-	}
-	fLength = count - 1;
-	ifRead = true;
-}
+	int charExchange(char);
+	//将字符转化为一个数字，A,G,C,T分别由一个质数表示（降低错误率）
 
-int Sequence::length()
-{
-	if (ifRead) return fLength;
-	else 
-	{
-		read();
-		return fLength;
-	}
-	
-}
+	void swap(int arr[], int m, int n);
+	bool checkDuplicate(int a[], int n);
+	void builedMaxHeap(int arr[], int lastIndex);
+	void adjustHeap(int arr[], int rootIndex, int lastIndex);
+	//使用堆排序，来判断是否一个集合中是否有重复元素，通过调用checkDuplicate函数来判断
 
-int Sequence::number(char base)
-{
-	int count = 0;
-	if (base=='A'||base=='G'||base=='C'||base=='T')
-	{
-		if (ifRead)
-		{
-			for (size_t i = 0; i < fLength; i++)
-			{
-				if (fileData[i] == base)count++;
-			}
-		}
-		else
-		{
-			cout << "please input the file address: ";
-			string fileAddress;
-			cin >> fileAddress;
-			ifstream input(fileAddress, ios::in);
-			if (!input)
-			{
-				cerr << "the file cannot be opened";
-				exit(EXIT_FAILURE);
-			}
-			char temp;
-			int fDataCount = 0;
-			while (!input.eof())
-			{
-				input >> temp;
-				if (temp == base)count++;
-				if (temp != '/t')
-				{
-					fileData[fDataCount] = temp;
-					fDataCount++;
-				}
-			}
-			fLength = fDataCount - 1;
-			if (fileData[fLength-1] == fileData[fDataCount-1])count--;
-			ifRead = true;
-		}
-		return count;
-	}
-	else
-	{
-		cout << "please input the right letters";
-		return -1;
-	}
-}
-
-string Sequence::longestConsecutive()
-{
-	int count = 1;
-	int maxcount = 1;
-	char base;
-	if (ifRead)
-	{
-		for (size_t i = 0; i < fLength-1; i++)
-		{
-			if (fileData[i]==fileData[i+1])count++;
-			else 
-			{
-				if (count>maxcount)
-				{
-					maxcount = count;
-					base = fileData[i - 1];
-				}
-				count = 1;
-			}
-		}
-	}
-	else
-	{
-		cout << "please input the file address: ";
-		string fileAddress;
-		cin >> fileAddress;
-		ifstream input(fileAddress, ios::in);
-		if (!input)
-		{
-			cerr << "the file cannot be opened";
-			exit(EXIT_FAILURE);
-		}
-
-		char prev = 'a';
-		char next;
-		while (!input.eof())
-		{
-			input >> next;
-			if (next!='/t')
-			{
-				if (next == prev)count++;
-				else
-				{
-					if (count>maxcount)
-					{
-						maxcount = count;
-						base = prev;
-					}
-					count = 1;
-				}
-				prev = next;
-			}
-		}
-	}
-	char *a = new char[maxcount + 1];
-	for (size_t i = 0; i < maxcount; i++)
-	{
-		a[i] = base;
-	}
-	a[maxcount] = '\0';
-	string b = a;
-	delete[]a;
-	return b;
-}
-
-string Sequence::longestRepeated()
-{
-	return string();
-}
+	int longestNum(vector<int> &, int);
+private:
+	string filename;
+	int longestIndex;
+	char fileData[150];
+	int fLength;
+	bool ifRead;
+};
