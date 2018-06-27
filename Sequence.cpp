@@ -332,7 +332,6 @@ int Sequence::longestRepeated()
 		else if (fileData[i] == 'T'&&fileData[i + 1] == 'C')TCindex.push_back(i);
 		else if (fileData[i] == 'T'&&fileData[i + 1] == 'T')TTindex.push_back(i);
 	}
-
 	int max = 3;
 	max = longestNum(AAindex, max);
 	max = longestNum(AGindex, max);
