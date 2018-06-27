@@ -16,8 +16,7 @@ public:
 	string longestConsecutive();
 //--------------------------------------------------------------------------------------------------------
 	int longestRepeated();
-	/*步骤：
-		  1.设定16种基本case：AA,AG,AC,AT,GA,GC......
+	/*步骤： 1.设定16种基本case：AA,AG,AC,AT,GA,GC......
 		  2.扫描整个数组，每一个fileData[i]分别对应一个基本case，取出相同的case的项
 		  3.设置一个int maxlength
 		  4.对每一种case，取出所有该case的项，对每一项的索引index开始，计算每一个index项到index+maxlength项的char值之和，将
