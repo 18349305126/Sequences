@@ -4,7 +4,8 @@ Sequence::Sequence(string fn)
 {
 	filename = fn;
 	ifRead = false;
-	longestIndex = 2;
+	tempRepeatedIndex = 0;
+	repeatedIndex = 0;
 }
 
 string Sequence::getFilename()
@@ -170,8 +171,7 @@ string Sequence::longestConsecutive()
 	return b;
 }
 
-
-int Sequence::charExchange(char a )
+int Sequence::charExchange(char a)
 {
 	int sum = 0;
 	switch (a)
@@ -180,13 +180,13 @@ int Sequence::charExchange(char a )
 		sum = 3;
 		break;
 	case 'G':
-		sum = 233 ;
+		sum = 19 ;
 		break;
 	case 'T':
-		sum =  41 ;
+		sum =  79 ;
 		break;
 	case 'C':
-		sum =  2221;
+		sum =  233;
 		break;
 	default:
 		break;
@@ -195,62 +195,32 @@ int Sequence::charExchange(char a )
 }
 
 
-
-//堆排序判断是否有重复元素------------------------------------------------------------------------------------------------
-void Sequence::swap(int arr[], int m, int n)
-{
-	int temp = arr[m];
-	arr[m] = arr[n];
-	arr[n] = temp;
-}
-
+//使用哈希查找判断是否有重复元素------------------------------------------------------------------
 bool Sequence::checkDuplicate(int a[], int n)
 {
-	int lastIndex = n - 1;
-	builedMaxHeap(a, lastIndex);
-
-	while (lastIndex > 0)
+	vector<int> hashTable(200);
+	for (size_t i = 0; i < hashTable.size(); i++)
 	{
-		swap(a, 0, lastIndex);
-		if (--lastIndex == 0) break;
-		adjustHeap(a, 0, lastIndex);
-
+		hashTable[i] = 0;
 	}
-	for (int i = 0; i < n - 1; i++)
+	for (size_t i = 0; i < n; i++)
 	{
-		if (a[i] == a[i + 1])return true;
+		if (a[i]>=hashTable.size())
+		{
+			for (size_t j = hashTable.size(); j <= a[i]; j++)
+			{
+				hashTable.push_back(0);
+			}
+		}
+		++hashTable[a[i]];
+		if (hashTable[a[i]] == 2)
+		{
+			tempRepeatedIndex = i;
+			return true;
+		}
 	}
 	return false;
 }
-
-void Sequence::builedMaxHeap(int arr[], int lastIndex)
-{
-	int j = (lastIndex - 1) / 2;
-
-	while (j >= 0)
-	{
-		int rootIndex = j;
-		adjustHeap(arr, rootIndex, lastIndex);
-		j--;
-	}
-}
-
-void Sequence::adjustHeap(int arr[], int rootIndex, int lastIndex)
-{
-	int childNodeIndex = rootIndex * 2 + 1;
-	while (childNodeIndex <= lastIndex)
-	{
-		if ((childNodeIndex + 1) <= lastIndex && arr[childNodeIndex + 1] > arr[childNodeIndex])childNodeIndex++;
-		if (arr[childNodeIndex] <= arr[rootIndex]) break;
-		else
-		{
-			swap(arr, rootIndex, childNodeIndex);
-			rootIndex = childNodeIndex;
-			childNodeIndex = childNodeIndex * 2 + 1;
-		}
-	}
-}
-//--------------------------------------------------------------------------------------------------
 
 int Sequence::longestNum(vector<int>& v, int max)
 {
@@ -274,6 +244,7 @@ int Sequence::longestNum(vector<int>& v, int max)
 		int i = 0;
 		while (checkDuplicate(sumsCp, v.size()))
 		{
+			repeatedIndex = v[tempRepeatedIndex];
 			++i;
 			for (size_t j = 0; j < v.size(); j++)
 			{
@@ -293,7 +264,7 @@ int Sequence::longestNum(vector<int>& v, int max)
 	}
 }
 
-int Sequence::longestRepeated()
+string Sequence::longestRepeated()
 {
 	if (!ifRead)read();
 	vector<int> AAindex;
@@ -312,7 +283,7 @@ int Sequence::longestRepeated()
 	vector<int> TGindex;
 	vector<int> TCindex;
 	vector<int> TTindex;
-	int maxLength = 1;
+
 	for (size_t i = 0; i < fLength - 1; i++)
 	{
 		if (fileData[i] == 'A'&&fileData[i + 1] == 'A')AAindex.push_back(i);
@@ -332,6 +303,7 @@ int Sequence::longestRepeated()
 		else if (fileData[i] == 'T'&&fileData[i + 1] == 'C')TCindex.push_back(i);
 		else if (fileData[i] == 'T'&&fileData[i + 1] == 'T')TTindex.push_back(i);
 	}
+
 	int max = 3;
 	max = longestNum(AAindex, max);
 	max = longestNum(AGindex, max);
@@ -349,5 +321,14 @@ int Sequence::longestRepeated()
 	max = longestNum(TGindex, max);
 	max = longestNum(TCindex, max);
 	max = longestNum(TTindex, max);
-	return max;
+
+	char *a = new char[max+1];
+	for (size_t i = 0; i < max; i++)
+	{
+		a[i] = fileData[i+repeatedIndex];
+	}
+	a[max] = '\0';
+	string b = a;
+	delete[]a;
+	return b;
 }
