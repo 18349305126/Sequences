@@ -39,6 +39,6 @@ private:
 	bool ifRead;
 	int tempRepeatedIndex;
 	int repeatedIndex;
-	//未修改hashTable，fileData的容量到足够大
+	
 };
 
