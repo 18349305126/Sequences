@@ -16,9 +16,10 @@ string Sequence::getFilename()
 
 void Sequence::read()
 {
-	cout << "please input the file address: ";
+	/*cout << "please input the file address: ";
 	string fileAddress;
-	cin >> fileAddress;
+	cin >> fileAddress;*/
+	string fileAddress = "/data/dna.txt";
 	ifstream input(fileAddress, ios::in);
 	int count = 0;
 	if (!input)
@@ -60,9 +61,10 @@ int Sequence::number(char base)
 		}
 		else
 		{
-			cout << "please input the file address: ";
+			/*cout << "please input the file address: ";
 			string fileAddress;
-			cin >> fileAddress;
+			cin >> fileAddress;*/
+			string fileAddress = "/data/dna.txt";
 			ifstream input(fileAddress, ios::in);
 			if (!input)
 			{
@@ -125,9 +127,10 @@ string Sequence::longestConsecutive()
 	}
 	else
 	{
-		cout << "please input the file address: ";
+		/*cout << "please input the file address: ";
 		string fileAddress;
-		cin >> fileAddress;
+		cin >> fileAddress;*/
+		string fileAddress = "/data/dna.txt";
 		ifstream input(fileAddress, ios::in);
 		if (!input)
 		{
@@ -218,6 +221,7 @@ bool Sequence::checkDuplicate(int a[], int n)
 	}
 	return false;
 }
+//------------------------------------------------------------------------------------------------------
 
 int Sequence::longestNum(vector<int>& v, int max)
 {
