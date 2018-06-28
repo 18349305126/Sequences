@@ -13,6 +13,7 @@ public:
 	void read();
 	int length();
 	int number(char);
+
 	string longestConsecutive();
 //--------------------------------------------------------------------------------------------------------
 	string longestRepeated();
@@ -33,7 +34,7 @@ public:
 	int longestNum(vector<int> &, int);
 private:
 	string filename;
-	char fileData[150];
+	vector<char> fileData;
 	int fLength;
 	bool ifRead;
 	int tempRepeatedIndex;
