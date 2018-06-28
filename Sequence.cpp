@@ -6,6 +6,7 @@ Sequence::Sequence(string fn)
 	ifRead = false;
 	tempRepeatedIndex = 0;
 	repeatedIndex = 0;
+	fileData.reserve(1300000);
 }
 
 string Sequence::getFilename()
@@ -31,7 +32,7 @@ void Sequence::read()
 		input >> temp;
 		if (temp!='/n')
 		{
-			fileData[count] = temp;
+			fileData.push_back(temp);
 			count++;
 		}
 	}
@@ -41,13 +42,8 @@ void Sequence::read()
 
 int Sequence::length()
 {
-	if (ifRead) return fLength;
-	else 
-	{
-		read();
-		return fLength;
-	}
-	
+	if (!ifRead)read();
+	return fLength;
 }
 
 int Sequence::number(char base)
@@ -108,12 +104,12 @@ string Sequence::longestConsecutive()
 		for (size_t i = 0; i < fLength; i+=maxcount)
 		{
 			int j = i;
-			while (fileData[i] == fileData[i + 1]) 
+			while (i+1<fLength&&fileData[i] == fileData[i + 1]) 
 			{
 				++i;
 				++count;
 			}
-			while (fileData[j] == fileData[j - 1])
+			while (j-1>=0 && fileData[j] == fileData[j - 1])
 			{
 				--j;
 				++count;
@@ -171,6 +167,7 @@ string Sequence::longestConsecutive()
 	return b;
 }
 
+
 int Sequence::charExchange(char a)
 {
 	int sum = 0;
@@ -198,7 +195,7 @@ int Sequence::charExchange(char a)
 //使用哈希查找判断是否有重复元素------------------------------------------------------------------
 bool Sequence::checkDuplicate(int a[], int n)
 {
-	vector<int> hashTable(200);
+	vector<int> hashTable(10000);
 	for (size_t i = 0; i < hashTable.size(); i++)
 	{
 		hashTable[i] = 0;
@@ -225,7 +222,6 @@ bool Sequence::checkDuplicate(int a[], int n)
 int Sequence::longestNum(vector<int>& v, int max)
 {
 	int *sums = new int[v.size()];
-	int *sumsCp = new int[v.size()];
 	for (size_t j = 0; j < v.size(); j++)
 	{
 		int sum = 0;
@@ -235,14 +231,12 @@ int Sequence::longestNum(vector<int>& v, int max)
 			sum = sum + charExchange(fileData[v[j] + k])*(k + 1);
 		}
 		sums[j] = sum;
-		sumsCp[j] = sum;
 	}
 	
-	
-	if (checkDuplicate(sumsCp, v.size()))
+	if (checkDuplicate(sums, v.size()))
 	{
 		int i = 0;
-		while (checkDuplicate(sumsCp, v.size()))
+		while (checkDuplicate(sums, v.size()))
 		{
 			repeatedIndex = v[tempRepeatedIndex];
 			++i;
@@ -250,11 +244,9 @@ int Sequence::longestNum(vector<int>& v, int max)
 			{
 				if(v[j]+max+i-1<fLength)
 				sums[j] = sums[j] + charExchange(fileData[v[j] + max + i - 1])*(max + i);
-				sumsCp[j] = sums[j];
 			}
 		}
 		delete[]sums;
-		delete[]sumsCp;
 		return (i + max - 1);
 	}
 	else 
